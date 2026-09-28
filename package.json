@@ -1,8 +1,8 @@
 {
   "name": "@local/dsh-task-notify",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
-  "description": "Task-complete notifications: an in-app toast plus a desktop notification when a Harness session finishes its turn.",
+  "description": "Notifications for a Harness session: an in-app toast plus a desktop notification when a turn finishes or when a session is blocked on the user (approval, question, plan review).",
   "type": "module",
   "exports": {
     ".": "./index.js",
@@ -10,8 +10,8 @@
     "./package.json": "./package.json"
   },
   "meta": {
-    "title": "任务完成通知",
-    "description": "会话任务完成时弹出应用内提示，并发送系统通知。"
+    "title": "任务通知",
+    "description": "任务完成或会话等待你处理（授权 / 提问 / 计划确认）时弹出应用内提示，并发送系统通知。"
   },
   "dsh": {
     "bundle": {

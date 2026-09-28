@@ -4,7 +4,7 @@
 
 ## 前置条件
 
-- **目标机的 DSH 要够新**：运行时必须含 `@deepseek-ai/dsh-client-ui-session`（它提供本插件读取的 `useSessionStatus` 根 hook）。本插件在桌面版 **0.1.7-rc.2** 上验证通过；旧的 0.1.1 npm 版没有这个包，装上去不会报错，但任务完成时**不会有任何提示**。
+- **目标机的 DSH 要够新**：运行时必须含 `@deepseek-ai/dsh-client-ui-session`（它提供本插件读取的 `useSessionStatus` 根 hook，以及状态投影里的 `pendingInteraction` 字段）。本插件在桌面版 **0.1.7-rc.2** 上验证通过；旧的 0.1.1 npm 版没有这个包，装上去不会报错，但**不会有任何提示**。
 - **系统通知授权**：第一次没看到横幅时，去「系统设置 → 通知 → DeepSeek Harness」放行。
 - 三条路都会把源码落在 `~/dsh-plugins/dsh-task-notify`（`install.sh` 负责安置），这样和原机器路径一致，文档里的命令可以照抄。
 
@@ -51,7 +51,8 @@ dsh plugin --profile desktop add https://github.com/BoyangL04/dsh-task-notify
 
 1. **Loader 里有行**：`cordis_inspect_query`，platform `host`、provider `Config`、method `listConfigs`，`input.name` 传 `@local/dsh-task-notify`。应看到 `include:task-notify`；`status: "absent"` 是正常的（本插件没有 Config 声明）。
 2. **客户端挂上了**：`cordis_inspect_query`，platform `client`、provider `Slots`、method `listSubTree`，`input.root` 传 `shell.overlay`。`selected.occupants` 里应有 `id: task-notify`、`active: true`，且 `catalog.standardProps` 里有 `useSessionStatus`。
-3. **真弹窗**：让 Agent 跑一个几秒的任务，等它答完。约 1.2 秒后应看到页面顶部居中的「任务完成」提示 + 一条系统横幅；点提示或横幅应把 Harness 拉到前台并打开那个会话。
+3. **真弹窗**：让 Agent 跑一个几秒的任务，等它答完。约 1.2 秒后应看到页面顶部居中的「任务完成」提示（绿点）+ 一条系统横幅；点提示或横幅应把 Harness 拉到前台并打开那个会话。
+4. **等待处理**：让 Agent 跑一个会触发授权（或提问 / 计划确认）的任务，别急着点。约 0.6 秒后应看到「需要你确认 / 需要你回答 / 计划待确认」提示（琥珀色点，停留 15 秒）+ 对应横幅；答完之后再触发下一次，应该照样通知。
 
 ## 卸载 / 回滚
 
