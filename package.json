@@ -1,0 +1,30 @@
+{
+  "name": "@local/dsh-task-notify",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Task-complete notifications: an in-app toast plus a desktop notification when a Harness session finishes its turn.",
+  "type": "module",
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./package.json": "./package.json"
+  },
+  "meta": {
+    "title": "任务完成通知",
+    "description": "会话任务完成时弹出应用内提示，并发送系统通知。"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": [
+        "@deepseek-ai/dsh-client-locale",
+        "@deepseek-ai/dsh-client-ui-session",
+        "@deepseek-ai/dsh-api-remotes"
+      ]
+    }
+  }
+}

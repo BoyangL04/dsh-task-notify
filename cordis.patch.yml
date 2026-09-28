@@ -1,0 +1,3 @@
+- insert:
+    - id: task-notify
+      name: '@local/dsh-task-notify'
