@@ -31,6 +31,7 @@
 | `index.js` | Host 半边，空实现——只在 Loader 里占一行，让 Client 扫描器发现本包 |
 | `client.js` | 全部功能：读会话状态投影、判定完成与待处理交互、渲染 toast、发系统通知 |
 | `install.sh` | 在另一台 Mac 上安置并安装（`--check` 只体检；`--profile` 指定 profile） |
+| `test/notify.test.mjs` | 回归校验台：用桩 React + 假时钟跑真 `client.js`，47 项断言覆盖两条路径与应静默的情形（`npm test`） |
 | `MIGRATION.md` | 迁移到另一台 Mac 的完整步骤、验证方法、卸载回滚 |
 
 ## 判定规则
@@ -71,6 +72,10 @@
 
 提示点颜色区分事件类型：完成是绿色（`--dsw-alias-state-success-primary`），等待处理是琥珀色（`--dsw-alias-state-warn-primary`，缺失时回退到 error 色）。
 
+## 已知限制
+
+`ATTENTION_SETTLE_MS` 只能**降低**被委托请求误报的概率，不能消除。运行时里 `PendingApproval.delegate()` 之后，真正取消发布的 `remove()` 在瀑布消费方的 `finally` 里执行，而 `finally` 要等 `await next()`（例如 auto-review 那一环）跑完才轮到；同时 `PendingInteractionDomain.valuesSnapshot()` 返回所有已发布的值，并不过滤已委派的条目。所以当下游监听者处理超过 `ATTENTION_SETTLE_MS` 时，一条本该由它消化掉的授权仍会通知你。对象上的 `#delegated` 是私有字段，插件侧拿不到这个信号，唯一的缓解手段就是把这个窗口调大。
+
 ## 文案
 
 走 Harness 的 locale 服务（命名空间 `task-notify`），`zh` / `en` 两套字典就在 `client.js` 里，跟随界面语言切换。
@@ -81,5 +86,5 @@
 
 ## 已验证 / 未验证
 
-- 已验证：包被 profile 加载（Loader 条目 `include:task-notify`）、`client.js` 被实时以当前版本送到页面（改一次 rev 变一次）、`shell.overlay` 槽位里出现 `task-notify` 占用者且 `active: true`、槽位向该条目提供 `useSessionStatus`；`client.js` 的判定逻辑用桩 React + 假时钟跑过 32 项断言（结算窗口、续跑去重、子代理静默、空白会话静默、通知文案、点击打开会话、自动消失、授权 / 提问 / 计划三类交互、按 key 去重、被委托请求静默、回答后新请求重新通知、横幅文本截断、两类 TTL 与不同 tag）。
+- 已验证：包被 profile 加载（Loader 条目 `include:task-notify`）、`client.js` 被实时以当前版本送到页面（改一次 rev 变一次）、`shell.overlay` 槽位里出现 `task-notify` 占用者且 `active: true`、槽位向该条目提供 `useSessionStatus`。判定逻辑由 `test/notify.test.mjs` 覆盖（`npm test`，47 项断言）：结算窗口、续跑去重、子代理静默、空白会话静默、通知文案、点击打开会话、自动消失、授权 / 提问 / 计划三类交互、按 `key` 去重、被委托请求静默、回答后新请求重新通知、无 `key` 时的退化、横幅文本截断、两类 TTL 与不同 tag。
 - 未验证：真实点击与系统横幅的实际观感，需要人眼确认一次。

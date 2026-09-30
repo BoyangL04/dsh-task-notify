@@ -27,7 +27,7 @@ dsh plugin --profile desktop add https://github.com/BoyangL04/dsh-task-notify
 要点：
 
 - **公开仓库**时目标机不需要任何凭据；**私有仓库**需要目标机也能访问（ssh key 或凭据助手）。
-- 锁版本：`github:BoyangL04/dsh-task-notify#v1.0.0`。
+- 锁版本：`github:BoyangL04/dsh-task-notify#v1.1.0`。
 - `install_bundle` 会先 `git ls-remote` 探测仓库，所以目标机要有 `git`（装 Xcode Command Line Tools 即可）。
 - **代价**：git 安装会把包拷进 profile，不再指向你的工作副本 —— 改本机 `client.js` 不会热重载。更新走 `dsh plugin --profile desktop update @local/dsh-task-notify`，或让 Agent 重新 install。想在原机器上继续「改一下保存就生效」，就保留现在的 `link:` 安装。
 

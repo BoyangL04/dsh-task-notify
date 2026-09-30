@@ -4,6 +4,9 @@
   "private": true,
   "description": "Notifications for a Harness session: an in-app toast plus a desktop notification when a turn finishes or when a session is blocked on the user (approval, question, plan review).",
   "type": "module",
+  "scripts": {
+    "test": "node test/notify.test.mjs"
+  },
   "exports": {
     ".": "./index.js",
     "./client": "./client.js",
